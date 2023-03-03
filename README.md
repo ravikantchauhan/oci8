@@ -5,12 +5,14 @@
 ### Download **Oracle Instant Client** and **SDK** from Oracle:
 
 > https://www.oracle.com/database/technologies/instant-client/linux-x86-64-downloads.html
-
 Download files:
 
-> Basic Package (ZIP): instantclient-basic-linux.x64-21.1.0.0.0.zip
+> Basic Package (ZIP): instantclient-basic-linux.x64-21.9.0.0.0.zip
+> SDK Package (ZIP): instantclient-sdk-linux.x64-21.9.0.0.0.zip
+Download links
 
-> SDK Package (ZIP): instantclient-sdk-linux.x64-21.1.0.0.0.zip
+> wget https://download.oracle.com/otn_software/linux/instantclient/219000/instantclient-basic-linux.x64-21.9.0.0.0dbru.zip
+> wget https://download.oracle.com/otn_software/linux/instantclient/219000/instantclient-sdk-linux.x64-21.9.0.0.0dbru.zip
 	
 	
 ## Step 2
@@ -19,8 +21,8 @@ Create new folders for Oracle Instant Client on server
 
 ```
     sudo mkdir /usr/lib/oracle
-    sudo mkdir /usr/lib/oracle/21.1
-    sudo mkdir /usr/lib/oracle/21.1/client64
+    sudo mkdir /usr/lib/oracle/21.9
+    sudo mkdir /usr/lib/oracle/21.9/client64
 ```
 
 ## Step 3
@@ -28,15 +30,14 @@ Create new folders for Oracle Instant Client on server
 Extract files
 
 ```
-    sudo cp instantclient-basic-linux.x64-21.1.0.0.0.zip /usr/lib/oracle/21.1/client64
-    sudo cp instantclient-sdk-linux.x64-21.1.0.0.0.zip /usr/lib/oracle/21.1/client64
+sudo cp instantclient-basic-linux.x64-21.9.0.0.0dbru.zip /usr/lib/oracle/21.9/client64
+sudo cp instantclient-sdk-linux.x64-21.9.0.0.0dbru.zip /usr/lib/oracle/21.9/client64
 
     cd /usr/lib/oracle/21.1/client64
 
-    sudo unzip instantclient-basic-linux.x64-21.1.0.0.0.zip
-    sudo unzip instantclient-sdk-linux.x64-21.1.0.0.0.zip
-
-    sudo mv instantclient_21_1 lib
+	sudo unzip instantclient-basic-linux.x64-21.9.0.0.0dbru.zip
+	sudo unzip instantclient-sdk-linux.x64-21.9.0.0.0dbru.zip
+    	sudo mv instantclient_21_1 lib
 ```
 
 ## Step 4
@@ -45,8 +46,8 @@ Create symbolic link to the new Instant Client files:
 
 ```
     cd /usr/lib/oracle/21.1/client64/lib/    
-    sudo ln -s libclntsh.so.21.1 libclntsh.so (It may already exist, continue)
-    sudo ln -s libocci.so.21.1 libocci.so (It may already exist, continue)
+    sudo ln -s libclntsh.so.21.9 libclntsh.so (It may already exist, continue)
+    sudo ln -s libocci.so.21.9 libocci.so (It may already exist, continue)
 ```
 
 ## Step 5
@@ -54,7 +55,7 @@ Create symbolic link to the new Instant Client files:
 Edit/Create this file with the path to the lib (for LDCONFIG):
 
 ```
-	sudo echo /usr/lib/oracle/21.1/client64/lib > /etc/ld.so.conf.d/oracle.conf
+	sudo echo /usr/lib/oracle/21.9/client64/lib > /etc/ld.so.conf.d/oracle.conf
 ```
 
 ## Step 6
@@ -69,8 +70,10 @@ Update Dynamic Linker
 
 Install php-dev php-pear build-essential and libaio1
 
-```
-	sudo apt-get install php-dev php-pear build-essential libaio1
+```	
+	sudo apt-get install build-essential libaio1
+	apt install php8.1-dev
+	apt install php8.1-pear
 ```
 
 ## Step 8
@@ -91,7 +94,7 @@ Install OCI8 from PCEL (desired version, default seems not to find it for me, i 
 During install it will require the path to Instant Client, write this:
 
 ```
-	instantclient,/usr/lib/oracle/21.1/client64/lib
+	instantclient,/usr/lib/oracle/21.9/client64/lib
 ```
 
 At the end something like this should appear:
@@ -109,7 +112,7 @@ You should add "extension=oci8.so" to php.ini
 Load OCI8 into PHP
 
 ```
-	sudo echo "extension=oci8.so" >> /etc/php/7.4/cli/php.ini
+	sudo echo "extension=oci8.so" >> /etc/php/8.1/cli/php.ini
 ```
 
 Restart Apache
@@ -123,7 +126,7 @@ Restart Apache
 Add to **mods-available**
 
 ```
-	cd /etc/php/7.4/mods-available/
+	cd /etc/php/8.1/mods-available/
 	sudo nano oci.ini
 ```
 
@@ -138,8 +141,8 @@ extension = oci8.so
 Create sym link to the created ini file
 
 ```
-	cd /etc/php/7.4/apache2/conf.d
-	sudo ln -s /etc/php/7.4/mods-available/oci.ini 20-oci.ini
+	cd /etc/php/8.1/apache2/conf.d
+	sudo ln -s /etc/php/8.1/mods-available/oci.ini 20-oci.ini
 ```
 
 Restart Apache
